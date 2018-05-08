@@ -8,8 +8,8 @@ from django.utils.html import conditional_escape
 from django.urls.exceptions import Resolver404
 from django.urls.resolvers import (
     get_resolver,
-    RegexURLResolver,
-    RegexURLPattern,
+    URLResolver,
+    URLPattern,
 )
 
 
@@ -54,9 +54,9 @@ def _resolver_resolve_to_name(resolver, path):
         new_path = path[match.end():]
         for pattern in resolver.url_patterns:
             try:
-                if isinstance(pattern, RegexURLPattern):
+                if isinstance(pattern, URLPattern):
                     name = _pattern_resolve_to_name(pattern, new_path)
-                elif isinstance(pattern, RegexURLResolver):
+                elif isinstance(pattern, URLResolver):
                     name = _resolver_resolve_to_name(pattern, new_path)
             except Resolver404 as e:
                 tried.extend([(pattern.regex.pattern + '   ' + t) for t in
