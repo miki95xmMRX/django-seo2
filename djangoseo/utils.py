@@ -5,9 +5,12 @@ import re
 from django.utils.functional import lazy
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
-from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import (RegexURLResolver, RegexURLPattern,
-                                      Resolver404, get_resolver)
+from django.urls.exceptions import Resolver404
+from django.urls.resolvers import (
+    get_resolver,
+    RegexURLResolver,
+    RegexURLPattern,
+)
 
 
 class NotSet(object):
