@@ -33,6 +33,15 @@ class Literal(object):
         self.value = value
 
 
+def get_regex(resolver_or_pattern):
+    """Utility method for django's deprecated resolver.regex"""
+    try:
+        regex = resolver_or_pattern.regex
+    except AttributeError:
+        regex = resolver_or_pattern.pattern.regex
+    return regex
+
+
 def _pattern_resolve_to_name(pattern, path):
     match = pattern.regex.search(path)
     if match:
@@ -49,7 +58,7 @@ def _pattern_resolve_to_name(pattern, path):
 
 def _resolver_resolve_to_name(resolver, path):
     tried = []
-    match = resolver.regex.search(path)
+    match = get_regex(resolver).search(path)
     if match:
         new_path = path[match.end():]
         for pattern in resolver.url_patterns:
@@ -59,8 +68,10 @@ def _resolver_resolve_to_name(resolver, path):
                 elif isinstance(pattern, URLResolver):
                     name = _resolver_resolve_to_name(pattern, new_path)
             except Resolver404 as e:
-                tried.extend([(pattern.regex.pattern + '   ' + t) for t in
-                              e.args[0]['tried']])
+                tr = e.args[0]['tried']
+                tried.extend(
+                    [(get_regex(pattern).pattern + '   ' + t) for t in tr]
+                )
             else:
                 if name:
                     return name
