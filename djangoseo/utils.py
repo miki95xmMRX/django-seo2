@@ -43,7 +43,7 @@ def get_regex(resolver_or_pattern):
 
 
 def _pattern_resolve_to_name(pattern, path):
-    match = pattern.regex.search(path)
+    match = get_regex(pattern).search(path)
     if match:
         name = ""
         if pattern.name:
@@ -75,7 +75,7 @@ def _resolver_resolve_to_name(resolver, path):
             else:
                 if name:
                     return name
-                tried.append(pattern.regex.pattern)
+                tried.append(get_regex(pattern).pattern)
         raise Resolver404({'tried': tried, 'path': new_path})
 
 
